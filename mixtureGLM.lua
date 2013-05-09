@@ -13,7 +13,7 @@ torch.manualSeed(seed);
 local saveOut = 1;
 
 -- Get training data
-dataName = 'teepee'; --or use 'teepee';
+dataName = 'wave'; --or use 'teepee';
 local fname = string.format('glmExpert_%s',dataName);
 local N = 1000; -- nObs
 local plot = 0; -- look at data
@@ -106,7 +106,7 @@ while (not done) do
 		Vin:resize(M,K);
 		local val, gg = softmaxLoss(XX, resp, Vin)
 		grad = gg:clone();
-		grad:resize(1, M*K);
+		grad:resize(M*K); -- must NOT be resize(1,M*K)
 		val = -val + torch.sum(torch.cmul(lamVec,Vin)); -- for reg
 		grad = -grad + torch.mul(torch.cmul(lamVec,Vin),2);		
 		return val, grad;
@@ -122,7 +122,7 @@ while (not done) do
 	CGstate = {}
 	
 	-- Very sensitive to choice of optimiser. SGD is no good.
-	vnew,fs = optim.cg(lossFun,vvec) --, BFGSstate)
+	vnew,fs = optim.lbfgs(lossFun,vvec, BFGSstate)
 	V = vnew:resize(M,K)
 
 	-- Check convergence
