@@ -123,7 +123,9 @@ while (not done) do
 	
 	-- Very sensitive to choice of optimiser. SGD is no good.
 	vnew,fs = optim.lbfgs(lossFun,vvec, BFGSstate)
+	--vnew,fs = optim.sgd(lossFun,vvec)
 	V = vnew:resize(M,K)
+	
 
 	-- Check convergence
 	local logLikDiff = torch.squeeze(torch.abs(ll[{{1},{iter}}] - ll[{{1},{iter-1}}]));
@@ -168,3 +170,6 @@ gnuplot.plot({'Expert 1',torch.squeeze(X1), torch.squeeze(weight[{{},{1}}])},{'E
 gnuplot.title('Gating Function Weight');
 
 -- plot X1 vs muk (don't know how to do this with gnuplot?!?!)
+
+
+
